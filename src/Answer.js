@@ -1,3 +1,5 @@
+const answerColors = [ "#3a3a3c", "#c9b458", "#6aaa64" ];
+
 /*
   attempt: string
   result: array with 5 ints. Where:
@@ -6,28 +8,22 @@
     2: correct letter at correct position!
 */
 export const Answer = ({ attempt, result }) => {
-  const attemptArray = attempt.split("");
+  const attemptArray = Array.from(attempt);
 
   const Letters = () => {
     return (
       <>
-        <div style={styles.letterBox}>
-          <p style={styles.letter}>C</p>
-        </div>
-        <div style={styles.letterBox}>
-          <p style={styles.letter}>A</p>
-        </div>
-        <div style={styles.letterBox}>
-          <p style={styles.letter}>K</p>
-        </div>
-        <div style={styles.letterBox}>
-          <p style={styles.letter}>E</p>
-        </div>
-        <div style={styles.letterBox}>
-          <p style={styles.letter}>S</p>
-        </div>
-      </>
-    );
+        {attemptArray.map((letter, index) => {
+          return (
+            <div key={letter + index} style={{
+                ...styles.letterBox,
+                backgroundColor: answerColors[result[index]]
+              }}>
+              <p style={styles.letter}>{letter}</p>
+            </div>
+          );
+        })}
+      </>)
   };
 
   return (
@@ -46,6 +42,5 @@ const styles = {
     width: "3rem",
     height: "3rem",
     margin: 4,
-    backgroundColor: "#3a3a3c"
-  }
+  },
 };
