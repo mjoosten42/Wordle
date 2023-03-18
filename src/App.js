@@ -6,7 +6,10 @@ import ConfettiExplosion from "react-confetti-explosion";
 import { GuessButton } from "./GuessButton";
 import { Answer } from "./Answer";
 import { Input } from "./Input";
-import { validateGuess } from "./game";
+import { isCorrect, scoreGuess, validateGuess } from "./game";
+import { words } from "./words";
+
+const answer = words.at(Math.floor(Math.random() * words.length));
 
 export default function App() {
   const [guess, setGuess] = useState("");
@@ -15,10 +18,22 @@ export default function App() {
   const [isExploding, setIsExploding] = useState(false);
 
   const onClick = () => {
-    const currentGuess = { guess: "CAKES", result: [0, 1, 2, 0, 1] };
-    setGuessArray([...guessArray, currentGuess]);
-    setMessage(message);
+    const error = validateGuess(guess);
+
+    if (error) {
+        return setMessage(error);
+    }
+
+    const result = scoreGuess(guess, answer);
+
+    if (isCorrect(result)) {
+      setIsExploding(true);
+      setMessage("AWESOME! You guessed it right!");
+    }
+  
+    setGuessArray([...guessArray, { attempt: guess.toUpperCase(), result }]);
   };
+
   const updateInput = (event) => {
     setGuess(event.target.value);
   };
@@ -37,9 +52,9 @@ export default function App() {
         </a>
       </h3>
 
-      {guessArray[0] && (
-        <Answer attempt={guessArray[0].guess} result={guessArray[0].result} />
-      )}
+      {guessArray.map((guess, index) => (
+        <Answer key={"Attempts" + index} {...guess} />
+      ))}
 
       <Input onChange={updateInput} />
       <GuessButton onClick={onClick} />
